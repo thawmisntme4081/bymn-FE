@@ -1,34 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { FC, Suspense } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { RouteConfig } from './commons/interfaces'
+import AdminLayout from './layouts/AdminLayout'
+import PublicLayout from './layouts/PublicLayout'
+import { routes, user } from './routes'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App: FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <BrowserRouter>
+      <Routes>
+        {routes.map((route) => {
+          if (!route.private) {
+            return (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  <PublicLayout>
+                    {route.component && <route.component />}
+                  </PublicLayout>
+                }
+              />
+            )
+          }
+          if (route.private && route.roles?.includes(user.role)) {
+            return (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={<AdminLayout />}
+              >
+                {route.children?.map((routeChild: RouteConfig) => {
+                  return (
+                    <Route
+                      key={routeChild.path}
+                      path={routeChild.path}
+                      index={route.path === routeChild.path}
+                      element={
+                        <Suspense fallback={<div>loading...</div>}>
+                          {routeChild.component && <routeChild.component />}
+                        </Suspense>
+                      }
+                    />
+                  )
+                })}
+              </Route>
+            )
+          }
+          return (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={
+                user.role !== 'admin' ? (
+                  <Navigate replace to="/" />
+                ) : (
+                  <Suspense fallback={<div>loading...</div>}>
+                    {route.component && <route.component />}
+                  </Suspense>
+                )
+              }
+            />
+          )
+        })}
+      </Routes>
+    </BrowserRouter>
   )
 }
 
