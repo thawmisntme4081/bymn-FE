@@ -28,7 +28,7 @@ If you are developing a production application, we recommend updating the config
 
 Using node v18.16.0
 
-Các thứ tự đẩy code: 
+Các thứ tự đẩy code:
 git pull
 git add .
 git commit -m "Message"

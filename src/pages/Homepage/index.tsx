@@ -4,6 +4,7 @@ import SectionsLayout from '../../layouts/SectionsLayout'
 import Banners from './Banners'
 import HeroSlider from './HeroSlider'
 import Honours from './Honours'
+import Club from './Club'
 
 interface IHomePageProps {}
 
@@ -14,6 +15,7 @@ const HomePage: FC<IHomePageProps> = () => {
         <HeroSlider />
         <SectionsLayout>
           <Banners />
+          <Club />
           <Honours />
         </SectionsLayout>
       </Container>

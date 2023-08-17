@@ -25,7 +25,7 @@ const Honours: FC<HonoursProps> = () => {
   return (
     <Section title="Honours">
       <Slider {...settings} className="mb-9">
-        {[...Array(LENGTH)].map((item, index) => (
+        {[...Array(LENGTH)].map((_, index) => (
           <HonourItem key={index} />
         ))}
       </Slider>
